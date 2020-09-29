@@ -1,9 +1,14 @@
-from _dependencies.func import _make_method_spec
+from inspect import isclass
+
+from _dependencies.inspect import _make_method_spec
 from _dependencies.markers import injectable
 
 
-def _make_init_spec(dependency):
+def _is_class(name, dependency):
+    return isclass(dependency) and not name.endswith("_class")
 
+
+def _make_class_spec(dependency):
     if _using_object_init(dependency):
         return injectable, dependency, {}, set(), set()
     else:
@@ -14,7 +19,6 @@ def _make_init_spec(dependency):
 
 
 def _using_object_init(cls):
-
     for base in cls.__mro__:
         if base is object:
             return True
